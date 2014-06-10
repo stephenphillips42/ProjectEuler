@@ -59,7 +59,29 @@ def findFactors(n):
 	print "Number too large for factoring"
 	return []
 
-
+def isprime(n):
+	k = 9 # Confidence parameter
+	for test in xrange(0,k):
+		d = n - 1
+		s = 1
+		while d % 2 == 0:
+			s += 1
+			d /= 2
+		a = random.randrange(2,n-1)
+		x = a**d % n
+		if x == 1 or x == n - 1:
+			continue
+		primebreak = False
+		for i in xrange(0,s-1):
+			x = x*x % n
+			if x == 1:
+				return False
+			elif x == n - 1:
+				primebreak = True
+				break
+		if not primebreak:
+			return False
+	return True
 
 
 

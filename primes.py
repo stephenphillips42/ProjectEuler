@@ -4,6 +4,7 @@ import random
 from sets import Set
 import math
 import numbers
+import listUtils
 
 def naivesieve(k):
 	A = [x for x in range(2,k)]
@@ -39,23 +40,23 @@ def modPow(b,k,N):
 		x = modPow(b,k//2,N)
 		return (x*x) % N
 
-def factorTrialDivision(n):
+def factorTrialDivision(n,verbose=False):
 	factors = []
 	sqrtN = 1+int(math.floor(math.sqrt(n)))
 	i = 0
 	checkup = n / 5
 	for k in sieveEratosthenes(sqrtN):
-		if n % k == 0:
+		while n % k == 0:
 			factors.append(k)
 			n = n // k
-		if i % (checkup) == 0:
+		if verbose and i % (checkup) == 0:
 			print "%d..." % k
 		i = i+1
 	return factors
 
-def findFactors(n):
-	if n < 1000:
-		return factorTrialDivision(n)
+def findFactors(n,verbose=False):
+	if n < 10**7:
+		return factorTrialDivision(n,verbose)
 	print "Number too large for factoring"
 	return []
 
@@ -83,7 +84,9 @@ def isprime(n):
 			return False
 	return True
 
-
+def numDivisors(N):
+	factors = factorTrialDivision(numbers.cumsum(x))
+	return listUtils.product(listUtils.addOne(listUtils.listCount(factors)))
 
 if __name__ == "__main__":
 	import sys

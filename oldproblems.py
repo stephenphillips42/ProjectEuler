@@ -383,6 +383,110 @@ def latticeCount(N):
         
         return a[N][N]
 
+#####################################################################
+# Problem 16
+def sumOfDigits():
+	L = 2**1000
+	s = 0
+	for i in xrange(302):
+		s = s + (L % 10)
+		L = L // 10
+	return s
+
+#####################################################################
+# Problem 17
+def digitsToLetters(d):
+	assert 0 <= d <= 1000
+	if d == 0:
+		return 'zero'
+	elif d == 1:
+		return 'one'
+	elif d == 2:
+		return 'two'
+	elif d == 3:
+		return 'three'
+	elif d == 4:
+		return 'four'
+	elif d == 5:
+		return 'five'
+	elif d == 6:
+		return 'six'
+	elif d == 7:
+		return 'seven'
+	elif d == 8:
+		return 'eight'
+	elif d == 9:
+		return 'nine'
+	elif d == 10:
+		return 'ten'
+	elif d == 11:
+		return 'eleven'
+	elif d == 12:
+		return 'twelve'
+	elif d == 13:
+		return 'thirteen'
+	elif d == 14:
+		return 'fourteen'
+	elif d == 15:
+		return 'fifteen'
+	elif d == 16:
+		return 'sixteen'
+	elif d == 17:
+		return 'seventeen'
+	elif d == 18:
+		return 'eighteen'
+	elif d == 19:
+		return 'nineteen'
+	elif d == 20:
+		return 'twenty'
+	elif 20 < d < 30:
+		return 'twenty ' + digitsToLetters(d % 10)
+	elif d == 30:
+		return 'thirty'
+	elif 30 < d < 40:
+		return 'thirty ' + digitsToLetters(d % 10)
+	elif d == 40:
+		return 'forty'
+	elif 40 < d < 50:
+		return 'forty ' + digitsToLetters(d % 10)
+	elif d == 50:
+		return 'fifty'
+	elif 50 < d < 60:
+		return 'fifty ' + digitsToLetters(d % 10)
+	elif d == 60:
+		return 'sixty'
+	elif 60 < d < 70:
+		return 'sixty ' + digitsToLetters(d % 10)
+	elif d == 70:
+		return 'seventy'
+	elif 70 < d < 80:
+		return 'seventy ' + digitsToLetters(d % 10)
+	elif d == 80:
+		return 'eighty'
+	elif 80 < d < 90:
+		return 'eighty ' + digitsToLetters(d % 10)
+	elif d == 90:
+		return 'ninety'
+	elif 90 < d < 100:
+		return 'ninety ' + digitsToLetters(d % 10)
+	elif d < 1000 and d % 100 == 0:
+		return digitsToLetters(d // 100) + ' hundred'
+	elif d < 1000:
+		return digitsToLetters(d // 100) + ' hundred and ' + digitsToLetters(d % 100)
+	elif d == 1000:
+		return 'one thousand'
+	else:
+		return ''
+
+def getLengthOfLetters():
+	l = 0
+	for i in xrange(1,1001):
+		l += len(digitsToLetters(i).replace(' ',''))
+	return l
+
+
+
+
 
 
 

@@ -159,6 +159,7 @@ def maxprod(nums,k):
 	return (m,mi)
 
 if problem == 8:
+	print maxprod(nums100Digits,4)
 
 #####################################################################
 # Problem 9
@@ -407,7 +408,7 @@ if problem == 16:
 	for i in xrange(302):
 		s = s + (L % 10)
 		L = L // 10
-	return s
+	print s
 
 #####################################################################
 # Problem 17
@@ -498,7 +499,7 @@ if problem == 17:
 	l = 0
 	for i in xrange(1,1001):
 		l += len(digitsToLetters(i).replace(' ',''))
-	return l
+	print l
 
 
 #####################################################################
@@ -758,5 +759,5 @@ if problem == 22:
 
 #####################################################################
 # Problem 23
-if problem == 22:
+if problem == 23:
 	pass

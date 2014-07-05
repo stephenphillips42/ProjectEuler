@@ -5,13 +5,18 @@ import math
 import numbers
 import primes
 import listUtils
+import nameconstants
+
+problem = 0
+if len(sys.argv) > 1:
+	problem = int(sys.argv[1])
 
 #####################################################################
 # Problem 4
 def ispalindrome(N):
 	return N == numbers.flip(N)
 
-def findmaxpalindrom():
+if problem == 4:
 	for x in xrange(899,1,0,0,0,):
 		for y in xrange(899,1,0,0,0,):
 			if ispalindrome(x*y):
@@ -23,8 +28,59 @@ def findmaxpalindrom():
 	print maxy
 
 #####################################################################
+# Problem 5
+if problem == 5:
+	print "Did this by hand"
+
+#####################################################################
 # Problem 6
-# See numbers.sumofsquares, and numbers.cumsum
+if problem == 6:
+	print (cumsum(100))**2 - sumofsquares(100)
+
+#####################################################################
+# Problem 7
+def maxprime(N):
+	# Create boolean array
+	A = [ True for x in range(0,N) ]
+	A[0] = A[1] = False # Simple cases
+	maxp = 0
+	primecount = 0
+	for i in xrange(1+int(math.floor(math.sqrt(N)))):
+		if A[i]:
+			j = i**2
+			while j < N:
+				A[j] = False
+				j = j + i
+			maxp = i
+			primecount = primecount + 1
+	return maxp, primecount
+
+# Note: 3137 is the 446th prime
+def findnthprime():
+	count = 446
+	x = 3137
+	progress = 1503
+	lastprime = x
+	while x < 10**7:
+		if primes.isprime(x):
+			count += 1
+			lastprime = x
+			if count == 10001:
+				print "FOUND IT"
+				print (x, count)
+				return
+		if x % progress == 0:
+			print (lastprime,count)
+		x += 2
+# Best solution
+if problem == 7:
+	primelist = primes.sieveEratosthenes(2*10**6)
+	l = len(primelist)
+	if l > 10001:
+		print "We got it!!"
+		print primelist[10000]
+	print l
+	print primelist[l-1] 
 
 #####################################################################
 # Problem 8
@@ -102,9 +158,11 @@ def maxprod(nums,k):
 
 	return (m,mi)
 
+if problem == 8:
+
 #####################################################################
 # Problem 9
-def pythagoreanTriple():
+if problem == 9:
 	for x in xrange(1,1000):
 		for y in xrange(1,x):
 			if 500000 - 1000*x - 1000*y + x*y == 0:
@@ -116,53 +174,8 @@ def pythagoreanTriple():
 	print a*b*c
 
 #####################################################################
-# Problem 7
-def maxprime(N):
-	# Create boolean array
-	A = [ True for x in range(0,N) ]
-	A[0] = A[1] = False # Simple cases
-	maxp = 0
-	primecount = 0
-	for i in xrange(1+int(math.floor(math.sqrt(N)))):
-		if A[i]:
-			j = i**2
-			while j < N:
-				A[j] = False
-				j = j + i
-			maxp = i
-			primecount = primecount + 1
-	return maxp, primecount
-
-# Note: 3137 is the 446th prime
-def findnthprime():
-	count = 446
-	x = 3137
-	progress = 1503
-	lastprime = x
-	while x < 10**7:
-		if primes.isprime(x):
-			count += 1
-			lastprime = x
-			if count == 10001:
-				print "FOUND IT"
-				print (x, count)
-				return
-		if x % progress == 0:
-			print (lastprime,count)
-		x += 2
-# Best solution
-def getPrime10001():
-	primelist = primes.sieveEratosthenes(2*10**6)
-	l = len(primelist)
-	if l > 10001:
-		print "We got it!!"
-		print primelist[10000]
-	print l
-	print primelist[l-1] 
-
-#####################################################################
 # Problem 10
-def sumPrimes():
+if problem == 10:
 	primelist = primes.sieveEratosthenes(2*10**6)
 	print sum(primelist)
 
@@ -189,7 +202,7 @@ A = [ [ 8, 2,22,97,38,15, 0,40, 0,75, 4, 5, 7,78,52,12,50,77,91, 8],
 	  [20,73,35,29,78,31,90, 1,74,31,49,71,48,86,81,16,23,57, 5,54],
 	  [ 1,70,54,71,83,51,54,69,16,92,33,48,61,43,52, 1,89,19,67,48] ]
 
-def findMaxGridProduct():
+if problem == 11:
 	maxprod = 0
 	for r in xrange(len(A)):
 		for c in xrange(len(A[0])-3):
@@ -223,7 +236,7 @@ def findMaxGridProduct():
 
 #####################################################################
 # Problem 12
-def triangleNumberDivisors():
+if problem == 12:
 	for x in xrange(9,50000):
 		numdiv = primes.numDivisors(numbers.cumsum(x))
 		if (numdiv) >= 500:
@@ -335,7 +348,7 @@ nums100Digits = [
   72107838435069186155435662884062257473692284509516L,
   20849603980134001723930671666823555245252804609722L,
   53503534226472524250874054075591789781264330331690L  ]
-def sumLargeNumbers():
+if problem == 13:
 	s = 0L
 	for i in xrange(len(nums100Digits)):
 		s += (nums100Digits[i])
@@ -354,7 +367,7 @@ def collatz(N):
 		count += 1
 	return count
 
-def collatzMax():
+if problem == 14:
 	cmax = 0
 	cmaxval = 1
 	for i in xrange(1,10**6+1):
@@ -383,9 +396,12 @@ def latticeCount(N):
         
         return a[N][N]
 
+if problem == 12:
+	print latticeCount(20)
+
 #####################################################################
 # Problem 16
-def sumOfDigits():
+if problem == 16:
 	L = 2**1000
 	s = 0
 	for i in xrange(302):
@@ -478,7 +494,7 @@ def digitsToLetters(d):
 	else:
 		return ''
 
-def getLengthOfLetters():
+if problem == 17:
 	l = 0
 	for i in xrange(1,1001):
 		l += len(digitsToLetters(i).replace(' ',''))
@@ -487,7 +503,6 @@ def getLengthOfLetters():
 
 #####################################################################
 # Problem 18 AND 67
-
 T = [
   [ 75 ],
   [ 95, 64 ],
@@ -619,16 +634,17 @@ def dftMaxPathHelper(T,Cache,d,x):
 def dftMaxPath(T,Cache):
 	return dftMaxPathHelper(T,Cache,0,0)
 
-def findMaxPaths():
+if problem == 18:
 	Cache = [ [ -1 for x in xrange(len(T)) ] for x in xrange(len(T)) ]
-	CacheBig = [ [ -1 for x in xrange(len(Tbig)) ] for x in xrange(len(Tbig)) ]
 	print dftMaxPath(T,Cache)
+
+if problem == 67:
+	CacheBig = [ [ -1 for x in xrange(len(Tbig)) ] for x in xrange(len(Tbig)) ]
 	print dftMaxPath(Tbig,CacheBig)
 
 
 #####################################################################
 # Problem 19
-
 regYearMonthDays = [
   31, # January
 	28, # February
@@ -665,7 +681,7 @@ monthDays = [ regYearMonthDays, leapYearMonthDays ]
 def isLeapYear(year):
 	return (year % 4 == 0 and not year % 100 == 0) or (year % 400 == 0)
 
-def countingSundays():
+if problem == 19:
 	weekday = 0 # On monday
 	sundays = 0
 	for year in xrange(1900,2001):
@@ -685,8 +701,62 @@ def countingSundays():
 
 
 #####################################################################
+# Problem 20
+if problem == 20:
+	Total = 1
+	for i in xrange(100):
+		Total *= (i+1)
+	print Total
+	digitsum = 0
+	while Total > 0:
+		digitsum += Total % 10
+		Total = Total // 10
+	print digitsum
 
 
+#####################################################################
+# Problem 21
+def getDivisorsCached(N,Cache):
+	if not N in Cache:
+		Cache[N] = primes.trialDivisionDivisors(x)
+	return Cache[N]
+if problem == 21:
+	Cache = {}
+	amicable = []
+	for x in xrange(1,10000):
+		if x % 100 == 0:
+			print x
+		for y in xrange(1,x+1):
+			xdivisors = getDivisorsCached(x,Cache)
+			ydivisors = getDivisorsCached(y,Cache)
+			if x == sum(ydivisors) and y == sum(xdivisors):
+				print "found one %d %d" % (x,y)
+				if not y == x:
+					amicable.append(x)
+					amicable.append(y)
+	print amicable
+	print sum(amicable)
 
+#####################################################################
+# Problem 22
+alphaNum = {
+	"A":1,"B":2,"C":3,"D":4,"E":5,"F":6,"G":7,"H":8,"I":9,"J":10,"K":11,"L":12,"M":13,"N":14,"O":15,
+	"P":16,"Q":17,"R":18,"S":19,"T":20,"U":21,"V":22,"W":23,"X":24,"Y":25,"Z":26
+	}
+def getScore(name):
+	score = 0
+	for x in name:
+		score += alphaNum[x]
+	return score
 
+if problem == 22:
+	SortedNamesList = sorted(nameconstants.NamesList)
+	t = 0
+	for i in xrange(len(nameconstants.NamesList)):
+		t += (i+1) * getScore(SortedNamesList[i])
+	print t 
 
+#####################################################################
+# Problem 23
+if problem == 22:
+	pass

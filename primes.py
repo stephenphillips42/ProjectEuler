@@ -85,8 +85,16 @@ def isprime(n):
 	return True
 
 def numDivisors(N):
-	factors = factorTrialDivision(numbers.cumsum(x))
+	factors = factorTrialDivision(numbers.cumsum(N))
 	return listUtils.product(listUtils.addOne(listUtils.listCount(factors)))
+
+def trialDivisionDivisors(N):
+	divisors = []
+	sqrtN = int(math.ceil(N/2))+1
+	for i in xrange(1,sqrtN):
+		if N % i == 0:
+			divisors.append(i)
+	return divisors
 
 if __name__ == "__main__":
 	import sys

@@ -62,7 +62,7 @@ def findnthprime():
 	progress = 1503
 	lastprime = x
 	while x < 10**7:
-		if primes.isprime(x):
+		if primes.isPrimeFast(x):
 			count += 1
 			lastprime = x
 			if count == 10001:
@@ -759,5 +759,189 @@ if problem == 22:
 
 #####################################################################
 # Problem 23
+def getNumbersTypes(Upper):
+	abundant = []
+	perfect = []
+	deficient = []
+	for i in xrange(Upper):
+		if i % 100 == 0:
+			sys.stdout.write(".")
+			sys.stdout.flush()
+		if i % 1000 == 0:
+			print i
+		s = sum(primes.trialDivisionDivisors(i))
+		if i < s:
+			abundant.append(i)
+		elif i == s:
+			perfect.append(i)
+		else:
+			deficient.append(i)
+
+	print "Done"
+	return abundant, perfect, deficient
+
 if problem == 23:
-	pass
+	Upper = 28123
+	abundant, perfect, deficient = getNumbersTypes(Upper)
+	nums = set()
+	for x in abundant:
+		for y in abundant:
+			nums.add(x+y)
+	underNums = set([ x for x in xrange(1,Upper)])
+	nonAbundantSums = underNums.difference(nums)
+	print sum(list(nonAbundantSums))
+
+#####################################################################
+# Problem 24
+global permutationstep
+permutationstep = 1
+global permutationdone
+permutationdone = False
+
+def permuteAll(perm,used):
+	global permutationstep
+	global permutationdone
+	if permutationdone == True:
+		return
+	next = [ x for x in xrange(len(used)) if used[x] == False ]
+	if len(next) == 0:
+		if permutationstep == 10**6:
+			print "FINAL:"
+			print perm
+			permutationdone = True
+		permutationstep += 1
+		return
+	for i in next:
+		used[i] = True
+		perm.append(i)
+		permuteAll(perm,used)
+		used[i] = False
+		perm.pop()
+
+# print '0123456789'
+# print "Permutation 10000"
+# print "10*9*8*7*6*5*4*3*2*1=%d" % (10*9*8*7*6*5*4*3*2*1)
+# print "-----------"
+# print "2*9*8*7*6*5*4*3*2*1=%d < 1000000 < %d=3*9*8*7*6*5*4*3*2*1" % (2*9*8*7*6*5*4*3*2*1, 3*9*8*7*6*5*4*3*2*1)
+# print "1000000-2*9*8*7*6*5*4*3*2*1=%d" % (1000000-2*9*8*7*6*5*4*3*2*1)
+# print '2, 023456789'
+# print "-----------"
+# print "6*8*7*6*5*4*3*2*1=%d < 274240 < %d=7*8*7*6*5*4*3*2*1" % (6*8*7*6*5*4*3*2*1, 7*8*7*6*5*4*3*2*1)
+# print "274240-6*8*7*6*5*4*3*2*1=%d" % (274240-6*8*7*6*5*4*3*2*1)
+# print '27, 02345789'
+# print "-----------"
+# print "6*7*6*5*4*3*2*1=%d < 32320 < %d=7*7*6*5*4*3*2*1" % (6*7*6*5*4*3*2*1, 7*7*6*5*4*3*2*1)
+# print "32320-6*7*6*5*4*3*2*1=%d" % (32320-6*7*6*5*4*3*2*1)
+# print '278, 0234589'
+# print "-----------"
+# print "2*6*5*4*3*2*1=%d < 2080 < %d=3*6*5*4*3*2*1" % (2*6*5*4*3*2*1, 3*6*5*4*3*2*1)
+# print "2080-2*6*5*4*3*2*1=%d" % (2080-2*6*5*4*3*2*1)
+# print '2783, 034589'
+# print "-----------"
+# print "5*5*4*3*2*1=%d < 640 < %d=6*5*4*3*2*1" % (5*5*4*3*2*1, 6*5*4*3*2*1)
+# print "640-5*5*4*3*2*1=%d" % (640-5*5*4*3*2*1)
+# print '27839, 03459'
+# print "-----------"
+# print "1*4*3*2*1=%d < 40 < %d=2*4*3*2*1" % (1*4*3*2*1, 2*4*3*2*1)
+# print "40-1*4*3*2*1=%d" % (40-1*4*3*2*1)
+# print '278391, 3459'
+# print "-----------"
+# print "2*3*2*1=%d < 16 < %d=3*3*2*1" % (2*3*2*1, 3*3*2*1)
+# print "16-2*3*2*1=%d" % (16-2*3*2*1)
+# print '2783915, 046'
+# print "-----------"
+# print "2*2*1=%d <= 4 < %d=3*2*1" % (2*2*1, 3*2*1)
+# print "4-2*2*1=%d" % (4-2*2*1) # 0
+# print '2783915460'
+
+if problem == 24:
+	# Brute Force Through the rotations
+	perm = [  ]
+	used = [ False for x in xrange(10) ]
+	permuteAll([],used)
+
+#####################################################################
+# Problem 25
+def fastfibonacci(N):
+	f1 = 1
+	f2 = 1
+	for x in xrange(1,N):
+		f1, f2 = f2, (f1 + f2)
+	return f1
+
+if problem == 25:
+	fl = 1
+	while True:
+		F = fastfibonacci(fl)
+		l = 0
+		while F > 0:
+			F = F // 10
+			l += 1
+		if l >= 1000:
+			break
+		fl += 1
+	print fl
+	print fastfibonacci(fl)
+
+#####################################################################
+# Problem 26
+def repDecLength(N):
+	if numbers.gcd(N,10) != 1:
+		return -1
+	for i in xrange(1,N):
+		if 10**i % N == 1:
+			return i
+
+if problem == 26:
+	m = 0
+	mi = 0
+	for i in xrange(3,1000,2):
+		if i % 5 == 0:
+			continue
+		repDecLen = repDecLength(i)
+		print "%d : %d" % (i, repDecLen)
+		if repDecLen > m:
+			m = repDecLen
+			mi = i
+	print m
+	print mi
+
+
+#####################################################################
+# Problem 27
+def p(n,a,b):
+	return n**2 + a*n + b
+
+# assumes P is a list of primes, pi index for that list
+def testQuadratic(pi, P):
+	b = P[pi]
+	m = 0
+	ma = -1
+	for a in xrange(-1000,1001):
+		n = 0
+		while p(n,a,b) > 0 and primes.isPrime(p(n,a,b)):
+			n += 1
+		if n > m:
+			m = n
+			ma = a
+	return (m,ma)
+
+if problem == 27:
+	m = 0
+	a = 0
+	b = 0
+	primelist = primes.primes(1000)
+	for pi in xrange(len(primelist)):
+		l, tmpA = testQuadratic(pi,primelist)
+		if l > m:
+			m = l
+			a = tmpA
+			b = primelist[pi]
+			print a, b, l
+	print "-----------"
+	print a,b,m
+	print a*b
+
+
+
+

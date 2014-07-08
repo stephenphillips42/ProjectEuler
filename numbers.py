@@ -7,6 +7,19 @@ def gcd(a,b):
 		a, b = b, a % b
 	return a
 
+def gcdl(lst):
+	if len(lst) == 1:
+		return lst[0]
+	return gcd(lst[0],gcdl(lst[1:]))
+
+def lcm(a,b):
+	return (a*b)/gcd(a,b)
+
+def lcml(lst):
+	if len(lst) == 1:
+		return lst[0]
+	return lcm(lst[0],lcml(lst[1:]))
+
 def egcd(a, b):
 	x,y, u,v = 0,1, 1,0
 	while a != 0:

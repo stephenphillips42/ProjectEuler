@@ -3,7 +3,7 @@
 import random
 from sets import Set
 import math
-import numbers
+import numberFunctions
 import listUtils
 
 def naivesieve(k):

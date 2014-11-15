@@ -2,7 +2,7 @@
 
 import sys
 import math
-import numbers
+import numberFunctions as nf
 import primes
 import listUtils
 import nameconstants
@@ -14,18 +14,16 @@ if len(sys.argv) > 1:
 #####################################################################
 # Problem 4
 def ispalindrome(N):
-	return N == numbers.flip(N)
+	return N == nf.flip(N)
 
 if problem == 4:
-	for x in xrange(899,1,0,0,0,):
-		for y in xrange(899,1,0,0,0,):
+	for x in xrange(899,1000):
+		for y in xrange(899,1000):
 			if ispalindrome(x*y):
 				maxx = x
 				maxy = y
 	print "Maximum:"
 	print maxx*maxy
-	print maxx
-	print maxy
 
 #####################################################################
 # Problem 5
@@ -239,10 +237,10 @@ if problem == 11:
 # Problem 12
 if problem == 12:
 	for x in xrange(9,50000):
-		numdiv = primes.numDivisors(numbers.cumsum(x))
+		numdiv = primes.numDivisors(nf.cumsum(x))
 		if (numdiv) >= 500:
 			print x
-			print numbers.cumsum(x)
+			print nf.cumsum(x)
 			print numdiv
 			break
 
@@ -759,7 +757,7 @@ if problem == 22:
 
 #####################################################################
 # Problem 23
-def getNumbersTypes(Upper):
+def getnfTypes(Upper):
 	abundant = []
 	perfect = []
 	deficient = []
@@ -782,7 +780,7 @@ def getNumbersTypes(Upper):
 
 if problem == 23:
 	Upper = 28123
-	abundant, perfect, deficient = getNumbersTypes(Upper)
+	abundant, perfect, deficient = getnfTypes(Upper)
 	nums = set()
 	for x in abundant:
 		for y in abundant:
@@ -886,7 +884,7 @@ if problem == 25:
 #####################################################################
 # Problem 26
 def repDecLength(N):
-	if numbers.gcd(N,10) != 1:
+	if nf.gcd(N,10) != 1:
 		return -1
 	for i in xrange(1,N):
 		if 10**i % N == 1:
@@ -941,6 +939,104 @@ if problem == 27:
 	print "-----------"
 	print a,b,m
 	print a*b
+
+
+#####################################################################
+# Problem 28
+if problem == 28:
+	S = 1001
+	i = 1
+	s = 0
+	while (2*i+1) <= S:
+		s += (2*i+1)**2
+		s += (2*i+1)**2-2*i
+		s += (2*i+1)**2-4*i
+		s += (2*i+1)**2-6*i
+		i += 1
+	print s+1
+
+
+#####################################################################
+# Problem 29
+if problem == 29:
+	terms = set([])
+	for a in xrange(2,101):
+		for b in xrange(2,101):
+			terms.add(a**b)
+	print len(terms)
+
+
+#####################################################################
+# Problem 30
+if problem == 30:
+	# Graciously given by The Online Encylopedia of Integer Sequences 
+	# (http://oeis.org/A052464/list)
+	# 0 and 1 not included because they are not sums
+	print sum([4150,4151,54748,92727,93084,194979])
+
+
+#####################################################################
+# Problem 31
+if problem == 31:
+	coins = [1, 2, 5, 10, 20, 50, 100, 200]
+	W = 200;
+	C = len(coins);
+	OPT = [ [-1 for x in xrange(0,C) ] for x in xrange(0,(W+1)) ] ;
+
+	# Dynamic Program
+	# coins is the list of length C of our coin types
+	# OPT[i][j] = number of ways to make i pence using coins less than or equal to j pence
+	# OPT[i][j] = sum_{k : k \le j, i - coins[k] \ge 0} OPT[i-coins[k],k]
+	# Initializations
+	for j in xrange(0,C):
+		OPT[0][j] = 1;
+	for i in xrange(0,W+1):
+		OPT[i][0] = 1;
+
+	for i in xrange(1,W+1):
+		for j in xrange(1,C):
+			s = 0
+			for k in xrange(0,j+1):
+				if (i - coins[k]) >= 0:
+					s += OPT[i-coins[k]][k]
+			OPT[i][j] = s;
+
+	print OPT[W][C-1]
+	# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in OPT]))
+
+
+
+#####################################################################
+# Problem 32
+if problem == 32:
+	from collections import Counter
+	# Finding pan-digital products
+	# Upper bound for the products: 2000 (why?)
+	digits = Counter({1:1,2:1,3:1,4:1,5:1,6:1,7:1,8:1,9:1}) # Set we are comparing to
+	panDigitalProds = set([])
+	for y in xrange(0,2000):
+		y_digits = Counter([])
+		for dig in str(y):
+			y_digits[int(dig)] += 1
+		for x in xrange(0,y+1):
+			these_digits = y_digits.copy()
+			for dig in str(x):
+				these_digits[int(dig)] += 1;
+			# print (x,y,x*y)
+			# print digits
+			# print these_digits
+			for dig in str(x*y):
+				these_digits[int(dig)] += 1;
+			if these_digits == digits:
+				panDigitalProds.add((x,y,x*y))
+				print (x,y,x*y)	
+
+	print panDigitalProds
+	panDigitalSum = 0
+	uniquePanDigitalProds = set([x[2] for x in panDigitalProds])
+	for panDigitalProd in uniquePanDigitalProds:
+		panDigitalSum += panDigitalProd
+	print panDigitalSum
 
 
 

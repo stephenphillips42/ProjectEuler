@@ -43,6 +43,27 @@ def cumsum(N):
 def sumofsquares(N):
 	return N*(N+1)*(2*N+1)/6
 
+# Problem specific functions
+def ispalindrome(N):
+	return N == flip(N)
+
+def factorial(N):
+	if N == 0:
+		return 1
+	p=1
+	for i in xrange(1,N+1):
+		p *= i
+	return p
+
+def base2(N):
+	M = 0 # N in base 2
+	k = 0 # Location we are at
+	while N != 0:
+		M = M + (10**k)*(N % 2)
+		N /= 2
+		k += 1
+	return M
+
 if __name__ == "__main__":
 	pass
 

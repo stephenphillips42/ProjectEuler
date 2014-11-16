@@ -3,7 +3,7 @@
 import random
 from sets import Set
 import math
-import numberFunctions
+import numberFunctions as nf
 import listUtils
 
 def naivesieve(k):
@@ -31,6 +31,7 @@ def sieveEratosthenes(k):
 				j = j + i
 	return [ i for i in xrange(k) if A[i] == True ]
 
+# Returns primes less than or equal to k
 def primes(k):
 	return sieveEratosthenes(k)
 

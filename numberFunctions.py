@@ -64,6 +64,20 @@ def base2(N):
 		k += 1
 	return M
 
+# Thank you stack overflow
+# Use Newton's/Hero's method to find
+# the integer square root of an integer
+def isqrt(N):
+	x = N
+	y = (x + 1) // 2
+	while y < x:
+		x = y
+		y = (x + N // x) // 2
+	return x
+
+def isPerfectSquare(N):
+	return N == (isqrt(N))**2
+
 if __name__ == "__main__":
 	pass
 

@@ -4,7 +4,7 @@ import random
 from sets import Set
 import math
 import numberFunctions as nf
-import listUtils
+import listUtils as lu
 
 def naivesieve(k):
 	A = [x for x in range(2,k)]
@@ -63,7 +63,7 @@ def factorTrialDivision(N,verbose=False):
 		i = i+1
 	if len(factors) == 0:
 		factors.append(N)
-	assert listUtils.product(factors) == norig, (str(factors) + (", %d != %d" % (listUtils.product(factors), norig)))
+	assert lu.product(factors) == norig, (str(factors) + (", %d != %d" % (lu.product(factors), norig)))
 	return factors
 
 def findFactors(N,verbose=False):
@@ -88,7 +88,7 @@ def findFactorsPairs(N):
 			break
 	if len(factors) == 0:
 		factors.append(N)
-	assert listUtils.product(factors) == norig, (str(factors) + (", %d != %d" % (listUtils.product(factors), norig)))
+	assert lu.product(factors) == norig, (str(factors) + (", %d != %d" % (lu.product(factors), norig)))
 	return factors
 
 def isPrime(N):
@@ -126,9 +126,35 @@ def isPrimeFast(N):
 			return False
 	return True
 
+# The math is complicated and beautiful
+# Refer to: http://www-math.mit.edu/phase2/UJM/vol1/DORSEY-F.PDF
+# Really good primality test
+def isPrimeFermat(N):
+	if N % 2 == 0:
+		return False
+	s = 0
+	d = N-1
+	while d % 2 == 0:
+		s += 1
+		d = d // 2
+	# Now we have N = 1 + 2**s * d
+	for test in xrange(1,25):
+		a = random.randint(1, N-1)
+		# Using modPow is ESSENTIAL (otherwise we get MASSIVE numbers)
+		if modPow(a,d,N) != 1: # Did not pass first test
+			passed = False
+			for j in xrange(s):
+				if modPow(a,d * (2**j),N) == N - 1:
+					passed = True
+			if not passed:
+				return False
+	return True
+
+
+
 def numDivisors(N):
-	factors = factorTrialDivision(numbers.cumsum(N))
-	return listUtils.product(listUtils.addOne(listUtils.listCount(factors)))
+	factors = factorTrialDivision(N)
+	return lu.product(lu.addOne(lu.listCount(factors)))
 
 def trialDivisionDivisors(N):
 	divisors = []

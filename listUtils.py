@@ -22,6 +22,22 @@ def addOne(lst):
 		l[i] += 1
 	return l
 
+# Thank you stack overflow
+def permute(xs, low=0):
+	if low + 1 >= len(xs):
+		yield xs
+	else: # Do lots of swapping
+		for p in permute(xs, low + 1):
+			yield p        
+		for i in range(low + 1, len(xs)):        
+			xs[low], xs[i] = xs[i], xs[low]
+			for p in permute(xs, low + 1):
+				yield p        
+			xs[low], xs[i] = xs[i], xs[low]
+
+def toNum(lst):
+	return int(''.join(map(str,lst)))
+
 if __name__ == "__main__":
 	pass
 

@@ -1,11 +1,18 @@
 #/usr/bin/python
-
+# Basic imports
 import sys
 import math
+
+# My imports
 import numberFunctions as nf
-import primes
-import listUtils
+import primeFunctions as pf
+import listUtils as lu
+import constants as const
 import largeconstants
+
+
+# Extra imports
+from collections import Counter # Basically a multiset
 
 problem = 0
 if len(sys.argv) > 1:
@@ -19,13 +26,13 @@ if problem == 4:
 			if nf.ispalindrome(x*y):
 				maxx = x
 				maxy = y
-	print "Maximum:"
 	print maxx*maxy
 
 #####################################################################
 # Problem 5
 if problem == 5:
-	print "Did this by hand"
+	# Did this by hand
+	print 232792560
 
 #####################################################################
 # Problem 6
@@ -34,48 +41,28 @@ if problem == 6:
 
 #####################################################################
 # Problem 7
-def maxprime(N):
-	# Create boolean array
-	A = [ True for x in range(0,N) ]
-	A[0] = A[1] = False # Simple cases
-	maxp = 0
-	primecount = 0
-	for i in xrange(1+int(math.floor(math.sqrt(N)))):
-		if A[i]:
-			j = i**2
-			while j < N:
-				A[j] = False
-				j = j + i
-			maxp = i
-			primecount = primecount + 1
-	return maxp, primecount
-
 # Note: 3137 is the 446th prime
+# Failed method -- too high a probability of getting it wrong
 def findnthprime():
 	count = 446
 	x = 3137
 	progress = 1503
 	lastprime = x
 	while x < 10**7:
-		if primes.isPrimeFast(x):
+		if pf.isPrimeFast(x):
 			count += 1
 			lastprime = x
 			if count == 10001:
-				print "FOUND IT"
-				print (x, count)
+				# print "FOUND IT"
+				# print (x, count)
 				return
 		if x % progress == 0:
 			print (lastprime,count)
 		x += 2
 # Best solution
 if problem == 7:
-	primelist = primes.sieveEratosthenes(2*10**6)
-	l = len(primelist)
-	if l > 10001:
-		print "We got it!!"
-		print primelist[10000]
-	print l
-	print primelist[l-1] 
+	primelist = pf.sieveEratosthenes(2*10**6)
+	print primelist[10000] 
 
 #####################################################################
 # Problem 8
@@ -143,7 +130,7 @@ if problem == 9:
 #####################################################################
 # Problem 10
 if problem == 10:
-	primelist = primes.sieveEratosthenes(2*10**6)
+	primelist = pf.sieveEratosthenes(2*10**6)
 	print sum(primelist)
 
 #####################################################################
@@ -185,13 +172,25 @@ if problem == 11:
 #####################################################################
 # Problem 12
 if problem == 12:
+	val = 0
 	for x in xrange(9,50000):
-		numdiv = primes.numDivisors(nf.cumsum(x))
+		# Find prime factors of n*(n-1)/2
+		numdiv = 0
+		if x % 2 == 0:
+			factorx = pf.factorTrialDivision(x//2)
+			factorx1 = pf.factorTrialDivision(x+1)
+			factorx.extend(factorx1)
+			numdiv = lu.product(lu.addOne(lu.listCount(factorx)))
+		else:
+			factorx = pf.factorTrialDivision(x)
+			factorx1 = pf.factorTrialDivision((x+1)//2)
+			factorx.extend(factorx1)
+			numdiv = lu.product(lu.addOne(lu.listCount(factorx)))
+
 		if (numdiv) >= 500:
-			print x
-			print nf.cumsum(x)
-			print numdiv
+			val = x
 			break
+	print nf.cumsum(val)
 
 #####################################################################
 # Problem 13
@@ -449,7 +448,7 @@ if problem == 20:
 # Problem 21
 def getDivisorsCached(N,Cache):
 	if not N in Cache:
-		Cache[N] = primes.trialDivisionDivisors(x)
+		Cache[N] = pf.trialDivisionDivisors(x)
 	return Cache[N]
 if problem == 21:
 	Cache = {}
@@ -470,14 +469,10 @@ if problem == 21:
 
 #####################################################################
 # Problem 22
-alphaNum = {
-	"A":1,"B":2,"C":3,"D":4,"E":5,"F":6,"G":7,"H":8,"I":9,"J":10,"K":11,"L":12,"M":13,"N":14,"O":15,
-	"P":16,"Q":17,"R":18,"S":19,"T":20,"U":21,"V":22,"W":23,"X":24,"Y":25,"Z":26
-	}
 def getScore(name):
 	score = 0
 	for x in name:
-		score += alphaNum[x]
+		score += const.alphaNum[x]
 	return score
 
 if problem == 22:
@@ -499,7 +494,7 @@ def getnfTypes(Upper):
 			sys.stdout.flush()
 		if i % 1000 == 0:
 			print i
-		s = sum(primes.trialDivisionDivisors(i))
+		s = sum(pf.trialDivisionDivisors(i))
 		if i < s:
 			abundant.append(i)
 		elif i == s:
@@ -639,7 +634,7 @@ if problem == 26:
 
 #####################################################################
 # Problem 27
-def p(n,a,b):
+def poly(n,a,b):
 	return n**2 + a*n + b
 
 # assumes P is a list of primes, pi index for that list
@@ -649,7 +644,7 @@ def testQuadratic(pi, P):
 	ma = -1
 	for a in xrange(-1000,1001):
 		n = 0
-		while p(n,a,b) > 0 and primes.isPrime(p(n,a,b)):
+		while poly(n,a,b) > 0 and pf.isPrime(poly(n,a,b)):
 			n += 1
 		if n > m:
 			m = n
@@ -660,7 +655,7 @@ if problem == 27:
 	m = 0
 	a = 0
 	b = 0
-	primelist = primes.primes(1000)
+	primelist = pf.primes(1000)
 	for pi in xrange(len(primelist)):
 		l, tmpA = testQuadratic(pi,primelist)
 		if l > m:
@@ -741,7 +736,6 @@ if problem == 31:
 #####################################################################
 # Problem 32
 if problem == 32:
-	from collections import Counter
 	# Finding pan-digital products
 	# Upper bound for the products: 2000 (why?)
 	digits = Counter({1:1,2:1,3:1,4:1,5:1,6:1,7:1,8:1,9:1}) # Set we are comparing to
@@ -824,7 +818,7 @@ if problem == 34:
 #####################################################################
 # Problem 35
 if problem == 35:
-	allPrimes = set(primes.primes(10**6)) # All primes less than a million
+	allPrimes = set(pf.primes(10**6)) # All primes less than a million
 	circularPrimes = set([])
 	for p in allPrimes:
 		circular = True
@@ -862,7 +856,7 @@ if problem == 36:
 #####################################################################
 # Problem 37
 if problem == 37:
-	allPrimes = set(primes.primes(10**6)) # All primes less than a million
+	allPrimes = set(pf.primes(10**6)) # All primes less than a million
 	truncablePrimes = []
 	for p in allPrimes:
 		if p < 10:
@@ -893,44 +887,185 @@ if problem == 37:
 
 #####################################################################
 # Problem 38
+allDigits = Counter({1:1,2:1,3:1,4:1,5:1,6:1,7:1,8:1,9:1}) # Set we are comparing to
+
+def isPandigital(N):
+	return isPandigitalStr(str(N))
+
+def isPandigitalStr(Nstr):
+	if len(Nstr) != 9:
+		return False
+	return Counter([ int(x) for x in Nstr ]) == allDigits
+
 if problem == 38:
-	pass
+	# Upper bounds:
+	# We know that 1 * (5 digit number) = (5 digit number), and that
+	# (> 1) * (5 digit number) = (>= 5 digit number)
+	# Therefore 5 digit numbers CANNOT satisify the pandigital multiples property
+	# And therefore 10**5-1 is our upper bound
+	pandigitalMultiples = []
+	pandigitalValues = []
+	for n in xrange(1,10**5):
+		Nstr = ""
+		k = 0
+		while len(Nstr) < 9:
+			k += 1
+			Nstr += str(k*n)
+		if isPandigitalStr(Nstr):
+			pandigitalMultiples.append((n,k))
+			pandigitalValues.append(int(Nstr))
+	print max(pandigitalValues)
 
 #####################################################################
 # Problem 39
+# Generate all Pythagorean Triples of perimeter < P 
+def generatePythagoreanTriples(P):
+	# Notes:
+	# - c can be at most P-2, insince 0 < a < b < c and (1)+(2)+(P-2) > P
+	# - c is of the form 4*n + 1 (thanks Wikipedia!!)
+	# - c is odd (see above), therefore exactly 1 of a or b is odd (thanks Wikipedia!!)
+	# - Using the above we can generate all the primitive pythagorean triples and then
+	#   use the fact that k**2*(a**2+b**2-c**2)==0 to generate the non-primitive ones
+	pythagTriples = []
+	for c in xrange(3,P+1,4):
+		for b in xrange(1,c):
+			for a in xrange(1+(b%2),b,2): # odd if b even, and vice versa
+				if a**2 + b**2 - c**2 == 0:
+					k = 1 # Generate not just primitive pythagorean triples
+					while k*(a+b+c) < P:
+						pythagTriples.append((k*a,k*b,k*c,k*(a+b+c)))
+						k += 1
+	return pythagTriples
+
 if problem == 39:
-	pass
+	# Find all pythagorean triples with perimeter <= 1000
+	pTriples = generatePythagoreanTriples(1000);
+	maxPerim = 0
+	maxPerimCount = 0
+	for perim in xrange(1,1001):
+		count = sum([ x for x in xrange(len(pTriples)) if pTriples[x][3] == perim])
+		if maxPerimCount < count:
+			maxPerim = perim
+			maxPerimCount = count
+
+	print maxPerim
 
 
 #####################################################################
 # Problem 40
 if problem == 40:
-	pass
+	i = 0;
+	loc = 0;
+	done = False;
+	digits = []
+	while not done:
+		i += 1
+		for d in [ int(x) for x in str(i) ]:
+			loc += 1
+			if loc == 1:
+				digits.append(d)
+			elif loc == 10:
+				digits.append(d)
+			elif loc == 10**2:
+				digits.append(d)
+			elif loc == 10**3:
+				digits.append(d)
+			elif loc == 10**4:
+				digits.append(d)
+			elif loc == 10**5:
+				digits.append(d)
+			elif loc == 10**6:
+				digits.append(d)
+				done = True
+				break
+
+	print digits
+	print lu.product(digits)
 
 #####################################################################
 # Problem 41
 if problem == 41:
-	pass
+	currPrime = -1
+	# Tested using 8 and 9 as well, returned no primes
+	for pandigital in lu.permute([1,2,3,4,5,6,7]):
+		primeCandidate =  lu.toNum(pandigital)
+		if pf.isPrimeFermat(primeCandidate):
+			if primeCandidate > currPrime:
+				currPrime = primeCandidate
+	print currPrime
 
 #####################################################################
 # Problem 42
+# Using getScore from problem 22
+def isTriangle(N):
+	m = int((math.sqrt(1+8*N)-1)/2 + 0.5)
+	return (m*(m+1)/2) == N
+
 if problem == 42:
-	pass
+	triangleWordList = largeconstants.TriangleWordsLists
+	triangleWordCount = 0
+	for word in triangleWordList:
+		if isTriangle(getScore(word)):
+			triangleWordCount += 1
+	print triangleWordCount
+
 
 #####################################################################
 # Problem 43
 if problem == 43:
-	pass
+	substrDivisible = []
+	divisibility = [2,3,5,7,11,13,17]
+	for pandigital in lu.permute([0,1,2,3,4,5,6,7,8,9]):
+		isCandidate = True
+		for i in xrange(0,len(divisibility)):
+			substr = lu.toNum(pandigital[(i+1):(i+4)])
+			if substr % divisibility[i] != 0:
+				isCandidate = False
+				break
+		if isCandidate:
+			substrDivisible.append(lu.toNum(pandigital))
+	print sum(substrDivisible)
+
 
 #####################################################################
 # Problem 44
+def isPentagonal(N):
+	m = int((1+math.sqrt(1+24*N))/6 + 0.5)
+	return (m*(3*m-1)/2) == N
+
 if problem == 44:
-	pass
+	B = 3000
+	pentagonalNums = []
+	for i in xrange(1,B+1):
+		pentagonalNums.append((i*(3*i-1))/2)
+
+	sumPentagonalCount = 0
+	sumAndDiffPentagonalCount = 0
+	minDiffVals = (-1,-1,10**10)
+	for i in xrange(0,B):
+		for j in xrange(0,i):
+			if isPentagonal(pentagonalNums[i]-pentagonalNums[j]):
+				if isPentagonal(pentagonalNums[i]+pentagonalNums[j]):
+					if abs(pentagonalNums[i]-pentagonalNums[j]) < minDiffVals[2]:
+						minDiffVals = (i,j,(pentagonalNums[i]-pentagonalNums[j]))
+
+	print minDiffVals[2]
 
 #####################################################################
 # Problem 45
+# Uses isTriangle from problem 42
+# Uses isPentagonal from problem 44
+# OK I never used this but I figured it out so here it is
+def isHexagonal(N):
+	m = int((1+math.sqrt(1+8*N))/4 + 0.5)
+	return (m*(2*m-1)) == N
+
 if problem == 45:
-	pass
+	for i in xrange(144,100000):
+		n = i*(2*i-1)
+		if isTriangle(n) and isPentagonal(n):
+			print n
+			break
 
 #####################################################################
 # Problem 46
@@ -951,6 +1086,74 @@ if problem == 48:
 # Problem 49
 if problem == 49:
 	pass
+
+#####################################################################
+# Problem 50
+if problem == 50:
+	pass
+
+#####################################################################
+# Problem 51
+if problem == 51:
+	pass
+
+#####################################################################
+# Problem 52
+if problem == 52:
+	pass
+
+#####################################################################
+# Problem 53
+if problem == 53:
+	pass
+
+#####################################################################
+# Problem 54
+if problem == 54:
+	pass
+
+#####################################################################
+# Problem 55
+if problem == 55:
+	pass
+
+#####################################################################
+# Problem 56
+if problem == 56:
+	pass
+
+#####################################################################
+# Problem 57
+if problem == 57:
+	pass
+
+#####################################################################
+# Problem 58
+if problem == 58:
+	pass
+
+#####################################################################
+# Problem 59
+if problem == 59:
+	pass
+
+#####################################################################
+# Problem 60
+if problem == 60:
+	pass
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

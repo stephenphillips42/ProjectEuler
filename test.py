@@ -1,20 +1,25 @@
 #/usr/bin/python
 
+# Basic imports
 import sys
 import math
-import numberFunctions as nf
-import primes
-import listUtils
-import largeconstants
-import time
 
+# My imports
+import numberFunctions as nf
+import primeFunctions as pf
+import listUtils as lu
+import constants as const
+import largeconstants
+
+# Extra imports
+from collections import Counter # Basically a multiset
+
+# Timing stuff
+import time
 
 if __name__ == '__main__':
 	starttime = time.clock()
-	print "Test"
-
-	from collections import Counter
-	allDigits = Counter({1:1,2:1,3:1,4:1,5:1,6:1,7:1,8:1,9:1}) # Set we are comparing to
+	print "Test" 
 
 
 

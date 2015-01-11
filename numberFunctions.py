@@ -64,6 +64,16 @@ def base2(N):
 		k += 1
 	return M
 
+# modPow(b,k,N) is b^k (mod N)
+def modPow(b,k,N):
+	if k == 0:
+		return 1
+	elif k % 2 == 1:
+		return (b*modPow(b,k-1,N)) % N
+	else: # k % 2 == 0
+		x = modPow(b,k//2,N)
+		return (x*x) % N
+
 # Thank you stack overflow
 # Use Newton's/Hero's method to find
 # the integer square root of an integer

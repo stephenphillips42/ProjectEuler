@@ -1070,27 +1070,116 @@ if problem == 45:
 #####################################################################
 # Problem 46
 if problem == 46:
-	pass
+	B = 2*10**6 # B for bound
+	primelist = pf.sieveEratosthenes(B)
+	primeset = set(primelist)
+	for i in xrange(5,B-1,2):
+		if i in primeset:
+			continue
+		goldbachSquare = False
+		for p in primelist:
+			m = i - p
+			if m < 0: # Prime too large
+				break
+			if m % 2 == 1: # Conjecture requires divisible by 2
+				continue
+			# Test conjecture for this prime
+			m = m // 2
+			if m == 0 or (int(math.sqrt(m) + 0.5))**2 == m:
+				goldbachSquare = True
+				break
+		if not goldbachSquare:
+			print i
+			break
 
 #####################################################################
 # Problem 47
 if problem == 47:
-	pass
+	runLength = 4
+	distinctPrimeRun = 0
+	primeList = pf.sieveEratosthenes(2*10**6)
+	for i in xrange(2*3*5*7,10**9):
+		nFactors = len(set(pf.factorTrialDivision(i,primeList)))
+		if nFactors == runLength:
+			distinctPrimeRun += 1
+			if distinctPrimeRun == runLength:
+				print (i-3,i-2,i-1,i)
+				break
+		else:
+			distinctPrimeRun = 0
 
 #####################################################################
 # Problem 48
 if problem == 48:
-	pass
+	s = 0
+	for i in xrange(1,1000):
+		s += nf.modPow(i,i,10**10)
+	print s % (10**10)
+
 
 #####################################################################
 # Problem 49
 if problem == 49:
-	pass
+	primeList = pf.sieveEratosthenes(10000)
+
+	# Find the first 4 digit prime
+	i = 0
+	while i < len(primeList):
+		if primeList[i] > 1000:
+			startIndex = i
+			break
+		i = i+1
+
+	# Reduce the primeList
+	primeList = primeList[startIndex:]
+	primeSet = set(primeList)
+
+	# Find the geometric sequences
+	foundSequence = False
+	for i in xrange(0,len(primeList)):
+		# Now since we are avoiding this case we have to skip it
+		if primeList[i] == 1487:
+			continue
+		for j in xrange(i+1,len(primeList)):
+			# Find out if they are permutations
+			if Counter(str(primeList[i])) != Counter(str(primeList[j])):
+				continue
+			# Now find if they from a geometric sequence
+			if (primeList[j] + (primeList[j]-primeList[i])) not in primeSet:
+				continue
+			primeListK = (primeList[j] + (primeList[j]-primeList[i]))
+			# Now check if that is a permutation
+			if Counter(str(primeList[i])) == Counter(str(primeListK)):
+				foundSequence = True
+				print (primeList[i],primeList[j],primeListK)
+				break
+		if foundSequence:
+			break
+
+
 
 #####################################################################
 # Problem 50
 if problem == 50:
-	pass
+	primeList = pf.sieveEratosthenes(10**6)
+	primeSet = set(primeList)
+	maxStart = 0
+	maxFin = 0
+	maxSum = 0
+	for i in xrange(0,len(primeList)):
+		j = i+1
+		while sum(primeList[i:j]) < 10**6 and j < len(primeList):
+			currSum = sum(primeList[i:j])
+			currRange = j-i
+			if currSum in primeSet and currRange > maxFin-maxStart:
+				maxStart = i
+				maxFin = j
+				maxSum = currSum
+			j = j+1
+
+	print maxStart
+	print maxFin
+	print maxSum
 
 #####################################################################
 # Problem 51
@@ -1140,6 +1229,21 @@ if problem == 59:
 #####################################################################
 # Problem 60
 if problem == 60:
+	pass
+
+#####################################################################
+# Problem 61
+if problem == 61:
+	pass
+
+#####################################################################
+# Problem 62
+if problem == 62:
+	pass
+
+#####################################################################
+# Problem 63
+if problem == 64:
 	pass
 
 

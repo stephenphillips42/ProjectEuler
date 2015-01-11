@@ -36,23 +36,16 @@ def primes(k):
 	return sieveEratosthenes(k)
 
 # Implement Pollard p-1 factorization
-# modPow(b,k,N) is b^k (mod N)
-def modPow(b,k,N):
-	if k == 0:
-		return 1
-	elif k % 2 == 1:
-		return (b*modPow(b,k-1,N)) % N
-	else: # k % 2 == 0
-		x = modPow(b,k//2,N)
-		return (x*x) % N
 
-def factorTrialDivision(N,verbose=False):
+def factorTrialDivision(N,primeList=None,verbose=False):
 	factors = []
-	bound = (N // 2) + 1
-	norig = N
+	if primeList == None:
+		bound = (N // 2) + 1
+		primeList = sieveEratosthenes(bound)
+	norig = N # Original N for latter verification
 	i = 0
 	checkup = N / 5
-	for k in sieveEratosthenes(bound):
+	for k in primeList:
 		while N % k == 0:
 			factors.append(k)
 			N = N // k
@@ -127,7 +120,7 @@ def isPrimeFast(N):
 	return True
 
 # The math is complicated and beautiful
-# Refer to: http://www-math.mit.edu/phase2/UJM/vol1/DORSEY-F.PDF
+# Refer to: http://www.math.mit.edu/phase2/UJM/vol1/DORSEY-F.PDF
 # Really good primality test
 def isPrimeFermat(N):
 	if N % 2 == 0:
@@ -141,10 +134,10 @@ def isPrimeFermat(N):
 	for test in xrange(1,25):
 		a = random.randint(1, N-1)
 		# Using modPow is ESSENTIAL (otherwise we get MASSIVE numbers)
-		if modPow(a,d,N) != 1: # Did not pass first test
+		if nf.modPow(a,d,N) != 1: # Did not pass first test
 			passed = False
 			for j in xrange(s):
-				if modPow(a,d * (2**j),N) == N - 1:
+				if nf.modPow(a,d * (2**j),N) == N - 1:
 					passed = True
 			if not passed:
 				return False

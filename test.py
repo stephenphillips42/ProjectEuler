@@ -10,7 +10,6 @@ import numberFunctions as nf
 import primeFunctions as pf
 import listUtils as lu
 import constants as const
-import largeconstants
 
 # Extra imports
 from collections import Counter # Basically a multiset

@@ -8,7 +8,6 @@ import numberFunctions as nf
 import primeFunctions as pf
 import listUtils as lu
 import constants as const
-import largeconstants
 
 
 # Extra imports
@@ -112,7 +111,8 @@ def maxprod(nums,k):
 	return (m,mi)
 
 if problem == 8:
-	print maxprod(largeconstants.num1000Digits,13)[0]
+	import data.problem0008
+	print maxprod(data.problem0008.num1000Digits,13)[0]
 
 #####################################################################
 # Problem 9
@@ -137,7 +137,8 @@ if problem == 10:
 # Problem 11
 
 if problem == 11:
-	A = largeconstants.grid20x20
+	import data.problem0011
+	A = data.problem0011.grid20x20
 	maxprod = 0
 	for r in xrange(len(A)):
 		for c in xrange(len(A[0])-3):
@@ -196,9 +197,10 @@ if problem == 12:
 # Problem 13
 # OK I cheated... thank you big number library of python
 if problem == 13:
+	import data.problem0013
 	s = 0L
-	for i in xrange(len(largeconstants.numList100Digits)):
-		s += (largeconstants.numList100Digits[i])
+	for i in xrange(len(data.problem0013.numList100Digits)):
+		s += (data.problem0013.numList100Digits[i])
 	print s
 
 #####################################################################
@@ -363,12 +365,14 @@ def dftMaxPath(T,Cache):
 	return dftMaxPathHelper(T,Cache,0,0)
 
 if problem == 18:
-	T = largeconstants.pathTriangle
+	import data.problem0018
+	T = data.problem0018.pathTriangle
 	Cache = [ [ -1 for x in xrange(len(T)) ] for x in xrange(len(T)) ]
 	print dftMaxPath(T,Cache)
 
 if problem == 67:
-	Tbig = largeconstants.pathTriangleBig
+	import data.problem0067
+	Tbig = data.problem0067.pathTriangleBig
 	CacheBig = [ [ -1 for x in xrange(len(Tbig)) ] for x in xrange(len(Tbig)) ]
 	print dftMaxPath(Tbig,CacheBig)
 
@@ -476,9 +480,10 @@ def getScore(name):
 	return score
 
 if problem == 22:
-	SortedNamesList = sorted(largeconstants.NamesList)
+	import data.problem0022
+	SortedNamesList = sorted(data.problem0022.NamesList)
 	t = 0
-	for i in xrange(len(largeconstants.NamesList)):
+	for i in xrange(len(SortedNamesList)):
 		t += (i+1) * getScore(SortedNamesList[i])
 	print t 
 
@@ -1002,7 +1007,8 @@ def isTriangle(N):
 	return (m*(m+1)/2) == N
 
 if problem == 42:
-	triangleWordList = largeconstants.TriangleWordsLists
+	import data.problem0042
+	triangleWordList = data.problem0042.TriangleWordsLists
 	triangleWordCount = 0
 	for word in triangleWordList:
 		if isTriangle(getScore(word)):
@@ -1369,7 +1375,8 @@ class PokerHand:
 
 
 if problem == 54:
-	PokerHands = largeconstants.PokerHands
+	import data.problem0054
+	PokerHands = data.problem0054.PokerHands
 	player1win = 0
 	for i in xrange(len(PokerHands)):
 		p = PokerHands[i]

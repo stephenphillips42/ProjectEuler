@@ -31,22 +31,7 @@ if __name__ == '__main__':
 
 
 
-	# Simulate the spiral after 49
-	n = 49
-	sidelen = 7
-	diagPrimes = 8
-	total = 13
-	while diagPrimes / float(total) > 0.1:
-		sidelen += 2
-		for i in xrange(4):
-			n += sidelen-1
-			if pf.isPrimeFermat(n):
-				diagPrimes += 1
-		total += 4
-		assert nf.isPerfectSquare(n)
-		print "\rPercentage: %f%%" % (diagPrimes / float(total) ),
-	print ""
-	print sidelen
+
 
 
 

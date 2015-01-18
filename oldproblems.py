@@ -1183,43 +1183,283 @@ if problem == 50:
 
 #####################################################################
 # Problem 51
+def blankSlotPrimes(n,m):
+	d = n - m # d for digits
+	# Create list of primes we will use
+	primeList = pf.sieveEratosthenes(10**(n+1))
+
+	# Remove primes that are too small
+	startIndex = 0
+	for i in xrange(0,len(primeList)):
+		if primeList[i] > 10**(n-1):
+			startIndex = i
+			break
+	primeList = primeList[startIndex:]
+
+	# Set up set for fast prime checking
+	primeSet = set(primeList)
+
+
+	# Indecies for the repeated digits
+	digitIndeces = []
+	for i in xrange(0,m):
+		digitIndeces.append(range(0,d+1))
+
+	# Data structure cleverness - how we insert the repeated digits
+	# into the number
+	NumStruct = ['' for x in xrange(0,2*d+1)]
+	numIndex = [ 2*x+1 for x in xrange(0,d)]
+	repIndex = [ 2*x for x in xrange(0,d+1)]
+
+	# Keep track of maximum
+	maxPrimeCount = 0
+	maxPrimeStruct = ([],[])
+
+	# Go through all the numbers with the repeated digits
+	for ni in xrange(0,10**d):
+		# Set up the struct
+		numStr = str(ni).zfill(d)
+		for i in xrange(0,d):
+			NumStruct[numIndex[i]] = numStr[i]
+
+		# Find the repeated indecies with the most primes
+		for t in itertools.product(*digitIndeces):
+			primeCount = 0
+			smallestValue = -1 # Store the smallest value of the prime
+			# Loop through actual value of repeated digits
+			for r in xrange(0,10):
+				numStruct = list(NumStruct)
+				# Place in the digits according to positions, t
+				for i in xrange(0,len(t)):
+					numStruct[repIndex[t[i]]] += (str(r))
+				# Check if the number is prime
+				num = int(''.join(numStruct))
+				if num in primeSet:
+					if smallestValue < 0:
+						smallestValue = r # Update the smallest value of the prime
+					primeCount += 1
+			# Update maximum
+			if primeCount > maxPrimeCount:
+				maxPrimeCount = primeCount
+				numStruct = list(NumStruct)
+				for i in xrange(0,len(t)):
+					numStruct[repIndex[t[i]]] += str(smallestValue)
+				smallest = int(''.join(numStruct))
+				maxPrimeStruct = (list(t),list(NumStruct),smallest)
+	return (maxPrimeCount, maxPrimeStruct)
+
 if problem == 51:
-	pass
+	n = 6
+	m = 3
+	(maxPrimeCount, maxPrimeStruct) = blankSlotPrimes(n,m)
+	print maxPrimeStruct
 
 #####################################################################
 # Problem 52
 if problem == 52:
-	pass
+	for d in xrange(2,7): # Go through all orders of magnitude
+		found = False
+		for i in xrange(10**(d-1),10**(d)):
+			# Prepend 1 to number (must start with 1)
+			n = i + 10**d
+			digits = nf.getDigits(n)
+			if digits == nf.getDigits(2*n) \
+					and digits == nf.getDigits(3*n) \
+					and digits == nf.getDigits(4*n) \
+					and digits == nf.getDigits(5*n) \
+					and digits == nf.getDigits(6*n):
+				 print n
+				 found = True
+				 break
+		if found:
+			break
 
 #####################################################################
 # Problem 53
 if problem == 53:
-	pass
+	count = 0
+	for n in xrange(1,100+1):
+		for k in xrange(0,n):
+			if nf.nchoosek(n,k) > 10**6:
+				count += 1
+
+	print count
 
 #####################################################################
 # Problem 54
+class PokerHand:
+	"""Class for Poker Hand for problem 54"""
+	def __init__(self, cards):
+		# Get the number and suits for each of the cards
+		self.cardnums = []
+		self.cardsuits = []
+		for c in cards:
+			# This changes 2, ..., 9, T, J, Q, K, A to 2-14 for simplicity
+			self.cardnums.append(const.pokerConversion[c[0]])
+			# This just saves the suit
+			self.cardsuits.append(c[1])
+		# Get the cards in sorted order
+		indeces = sorted(range(len(self.cardnums)), key=lambda k: self.cardnums[k])
+		self.cardnums = sorted(self.cardnums)
+		self.cardsuits = [ self.cardsuits[i] for i in indeces ]
+		self.sortedorig = [ cards[i] for i in indeces ]
+
+	# Find the rank, value of hand of said rank, and the max card of the hand
+	def handRank(self):
+		assert len(self.cardnums) == len(self.cardsuits), "Cannot match suits"
+		assert len(self.cardnums) == 5, "We do not have the right number of cards"
+		maxcard = max(self.cardnums)
+		# Figure out what rank the card is - return rank of hand,
+		# plus value of particular instance of that rank
+
+		# Rank 10 - Royal Flush: Ten, Jack, Queen, King, Ace, in same suit.
+		if self.cardnums == [10,11,12,13,14] \
+				and lu.allSame(self.cardsuits):
+			return (10,14)
+
+		# Rank 9 - Straight Flush: All cards are consecutive values of same suit.
+		if self.cardnums == [(x+self.cardnums[0]) for x in xrange(5)] \
+				and lu.allSame(self.cardsuits):
+			return (9,self.cardnums[0]+4)
+
+		# Rank 8 - Four of a Kind: Four cards of the same value.
+		if self.cardnums[0:4] == [self.cardnums[0] for x in xrange(4)] \
+				or self.cardnums[1:5] == [self.cardnums[1] for x in xrange(4)]:
+			# Value of the hand is the number of the repeated card
+			return (8,self.cardnums[2])
+
+		# Rank 7 - Full House: Three of a kind and a pair.
+		if self.cardnums[0:2] == [self.cardnums[0], self.cardnums[0]] \
+				and self.cardnums[3:5] == [self.cardnums[1], self.cardnums[1]]:
+			# Have two pairs, check to see if it is actually a full house
+			if self.cardnums[2] == self.cardnums[0] \
+					or self.cardnums[2] == self.cardnums[4]:
+				return (7,self.cardnums[2])
+
+		# Rank 6 - Flush: All cards of the same suit.
+		if lu.allSame(self.cardsuits):
+			return (6,maxcard)
+
+		# Rank 5 - Straight: All cards are consecutive values.
+		if self.cardnums == [(x+self.cardnums[0]) for x in xrange(5)]:
+			return (5,self.cardnums[0]+4)
+
+		# Rank 4 - Three of a Kind: Three cards of the same value.
+		if self.cardnums[0:3] == [self.cardnums[0] for x in xrange(3)] \
+				or self.cardnums[1:4] == [self.cardnums[1] for x in xrange(3)] \
+				or self.cardnums[2:5] == [self.cardnums[2] for x in xrange(3)]:
+			return (4,self.cardnums[2])
+
+		# Rank 3 - Two Pairs: Two different pairs.
+		for i in xrange(2):
+			if self.cardnums[i] == self.cardnums[i+1] \
+					and self.cardnums[i+2] == self.cardnums[i+3]:
+				return (3,max(self.cardnums[i], self.cardnums[i+2]))
+		if self.cardnums[0] == self.cardnums[1] \
+				and self.cardnums[3] == self.cardnums[4]:
+			return (3,max(self.cardnums[0], self.cardnums[3]))
+
+		# Rank 2 - One Pair: Two cards of the same value.
+		for i in xrange(4):
+			if self.cardnums[i] == self.cardnums[i+1]:
+				return (2,self.cardnums[i])
+
+		# Rank 1 - High Card: Highest value card.
+		return (1,maxcard)
+
+
 if problem == 54:
-	pass
+	PokerHands = largeconstants.PokerHands
+	player1win = 0
+	for i in xrange(len(PokerHands)):
+		p = PokerHands[i]
+		hand1 = PokerHand(p[0])
+		hand2 = PokerHand(p[1])
+		(rank1,value1) = hand1.handRank()
+		(rank2,value2) = hand2.handRank()
+		winner = 2
+		if rank1 > rank2 \
+				or rank1 == rank2 and value1 > value2:
+			player1win += 1
+		if rank1 == rank2 and value1 == value2:
+			i = -1
+			while i != -5 and hand1.cardnums[i] == hand2.cardnums[i]:
+				i -= 1
+			if hand1.cardnums[i] > hand2.cardnums[i]:
+				player1win += 1
+
+
+	print player1win
 
 #####################################################################
 # Problem 55
 if problem == 55:
-	pass
+	lychrelNumCount = 0
+	for i in xrange(1,10001):
+		k = 0
+		n = i
+		while not nf.ispalindrome(n + nf.flip(n)) and k < 50:
+			k += 1
+			n += nf.flip(n)
+
+		if k == 50:
+			lychrelNumCount += 1
+
+	print lychrelNumCount
+
+
 
 #####################################################################
 # Problem 56
 if problem == 56:
-	pass
+	maxa = 0
+	maxb = 0
+	maxsum = 0
+	for a in xrange(1,100):
+		for b in xrange(1,100):
+			n = a**b
+			currsum = sum([int(x) for x in str(n)])
+			if currsum > maxsum:
+				maxsum = currsum
+				maxa = a
+				maxb = b
+
+	print maxsum
 
 #####################################################################
 # Problem 57
 if problem == 57:
-	pass
+	from fractions import Fraction
+	largerNumeratorCount = 0
+	stime1 = time.clock()
+	frac = Fraction(2,1) # first iteration
+	for i in xrange(1,1000):
+		frac = 2 + 1 / frac
+		sqrt2 = 1 + 1/frac
+		if len(str(sqrt2.numerator)) > len(str(sqrt2.denominator)):
+			largerNumeratorCount += 1
+
+	print largerNumeratorCount
 
 #####################################################################
 # Problem 58
 if problem == 58:
-	pass
+	# Simulate the spiral after 49
+	n = 49
+	sidelen = 7
+	diagPrimes = 8
+	total = 13
+	while diagPrimes / float(total) > 0.1:
+		sidelen += 2
+		for i in xrange(4):
+			n += sidelen-1
+			if pf.isPrimeFermat(n):
+				diagPrimes += 1
+		total += 4
+		assert nf.isPerfectSquare(n)
+		print "\rPercentage: %f%%" % (diagPrimes / float(total) ),
+	print ""
+	print sidelen
 
 #####################################################################
 # Problem 59
@@ -1243,9 +1483,93 @@ if problem == 62:
 
 #####################################################################
 # Problem 63
+if problem == 63:
+	pass
+
+#####################################################################
+# Problem 64
 if problem == 64:
 	pass
 
+#####################################################################
+# Problem 65
+if problem == 65:
+	pass
+
+#####################################################################
+# Problem 66
+if problem == 66:
+	pass
+
+#####################################################################
+# Problem 67
+if problem == 67:
+	pass
+
+#####################################################################
+# Problem 68
+if problem == 68:
+	pass
+
+#####################################################################
+# Problem 69
+if problem == 69:
+	pass
+
+#####################################################################
+# Problem 70
+if problem == 70:
+	pass
+
+#####################################################################
+# Problem 71
+if problem == 71:
+	pass
+
+#####################################################################
+# Problem 72
+if problem == 72:
+	pass
+
+#####################################################################
+# Problem 73
+if problem == 73:
+	pass
+
+#####################################################################
+# Problem 74
+if problem == 74:
+	pass
+
+#####################################################################
+# Problem 75
+if problem == 75:
+	pass
+
+#####################################################################
+# Problem 76
+if problem == 76:
+	pass
+
+#####################################################################
+# Problem 77
+if problem == 77:
+	pass
+
+#####################################################################
+# Problem 78
+if problem == 78:
+	pass
+
+#####################################################################
+# Problem 79
+if problem == 79:
+	pass
+
+#####################################################################
+# Problem 80
+if problem == 80:
+	pass
 
 
 

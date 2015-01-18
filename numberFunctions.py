@@ -1,4 +1,11 @@
+# Math libraries
 import numpy as np
+
+# Various utilities
+import operator as op
+from collections import Counter # Basically a multiset
+
+# My functions
 import listUtils
 
 # Number theory stuff
@@ -54,6 +61,17 @@ def factorial(N):
 	for i in xrange(1,N+1):
 		p *= i
 	return p
+
+# Thank you stack overflow
+def nchoosek(N,k):
+	k = min(k, N-k)
+	if k == 0: return 1
+	numer = reduce(op.mul, xrange(N, N-k, -1))
+	denom = factorial(k)
+	return numer//denom
+
+def getDigits(N):
+	return Counter(str(N)) # Very but makes things more readable
 
 def base2(N):
 	M = 0 # N in base 2

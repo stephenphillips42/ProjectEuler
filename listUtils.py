@@ -38,6 +38,13 @@ def permute(xs, low=0):
 def toNum(lst):
 	return int(''.join(map(str,lst)))
 
+def allSame(lst):
+	v = lst[0]
+	for i in xrange(1,len(lst)):
+		if lst[i] != v:
+			return False
+	return True
+
 if __name__ == "__main__":
 	pass
 
